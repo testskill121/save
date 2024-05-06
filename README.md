@@ -194,17 +194,17 @@ local VirtualUser=game:service'VirtualUser'
         end
     end
 end)
-
     AutoFarm:AddToggle("Start",true,function(t)
         _G.AutoFarm = t
 				_G.BringMob = t
 				_G.Usecode = t
-				_G.fastattack = t
+				_G.FastAttack = t
 				_G.Usefastattack = t
 				SuperhumanFull = t
 				_G.Auto_Buy_Legendary_Sword = t
 				Triple_A = t
     end)
+
 		AutoFarm:AddToggle("Whitescreen",false,function(t)
 				_G.White = t
 		spawn(function()
@@ -216,7 +216,7 @@ end)
 	end)
 		end)
 
-local Stats = Tab:CreateSector("Stats","Reft")
+local Stats = Tab:CreateSector("Settings","Reft")
 Stats:AddLabel("Stats")
 Stats:AddToggle("Auto Melee",false,function(t)
 _G.Melee = t
@@ -260,6 +260,26 @@ end
 end)
 Stats:AddSlider("Point",1,1,100,1,function(x)
 Point = x
+end)
+Stats:AddLabel("Fps")
+		Stats:AddToggle("Lock Fps",true,function(t)
+		FpsLock = t
+				if FpsLock then
+        pcall(setfpscap, FpsCap)
+        pcall(set_fps_cap, FpsCap)
+    else
+        pcall(setfpscap,240)
+        pcall(set_fps_cap,240)
+		end
+end)
+
+
+		Stats:AddSlider("Fps",1,30,240,1,function(x)
+FpsCap  = x
+				    if FpsLock then
+        pcall(setfpscap, FpsCap)
+        pcall(set_fps_cap, FpsCap)
+		end
 end)
 
     spawn(function()
@@ -340,7 +360,7 @@ spawn(function()
                     until _G.AutoFarm == false or v.Humanoid.Health <= 0
                     if not string.find(game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text,NameMon) then
 												local Lv = game:GetService("Players").LocalPlayer.Data.Level.Value
-													if Lv <= Lv then
+													if not Lv <= Lv then
 												game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
 												end
                     if game.Players.LocalPlayer.Character.Humanoid.Health <= 0 then
@@ -424,19 +444,20 @@ spawn(function()
 		end)
 
 
-local plr = game.Players.LocalPlayer
+
 
 spawn(function()
-	local CbFw = getupvalues(require(plr.PlayerScripts.CombatFramework))
+	local Module = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+	local CbFw = debug.getupvalues(Module)
 	local CbFw2 = CbFw[2]
 	local CameraShakerR = require(game.ReplicatedStorage.Util.CameraShaker)
 	CameraShakerR:Stop()
 	spawn(function()
 		game:GetService("RunService").Stepped:Connect(function()
 			pcall(function()
-				CbFw2.activeController.hitboxMagnitude = 55
+				CbFw2.activeController.hitboxMagnitude = 100
 				if _G.Usefastattack then
-					if _G.fastattack then
+					if _G.FastAttack then
 						if game.Players.LocalPlayer.Character:FindFirstChild("Weapon") then
 							CbFw2.activeController.timeToNextAttack = 2
 						elseif game.Players.LocalPlayer.Character:FindFirstChild("Weapon") then
@@ -449,25 +470,13 @@ spawn(function()
 						CbFw2.activeController.blocking = false
 						CbFw2.activeController.timeToNextBlock = 0
 						game.Players.LocalPlayer.Character.Humanoid.Sit = false	
-					end
-				end
+            end
+        end
+        task.wait()
+    end)
+end)
 			end)
-		end)
 	end)
-	end)
-	
-spawn(function()
-    game:GetService("RunService").RenderStepped:Connect(function()
-			pcall(function()
-				if _G.Usefastattack then
-					if _G.fastattack then
-						Click()
-					end
-				end
-			end)
-		end)
-	end)
-
 
 
         local decalsyeeted = true -- Leaving this on makes games look shitty but the fps goes up by at least 20.
@@ -541,10 +550,7 @@ spawn(function()
 			pcall(function()
 			if Superhuman or SuperhumanFull and game.Players.LocalPlayer:FindFirstChild("WeaponAssetCache") then 
 				if game.Players.LocalPlayer.Backpack:FindFirstChild("Combat") or game.Players.LocalPlayer.Character:FindFirstChild("Combat") then
-					local args = {
-						[1] = "BuyElectro"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBlackLeg")
 				end   
 				if game.Players.LocalPlayer.Character:FindFirstChild("Superhuman") or game.Players.LocalPlayer.Backpack:FindFirstChild("Superhuman") then
 					SelectToolWeapon = "Superhuman"
@@ -562,28 +568,16 @@ spawn(function()
 					SelectToolWeapon = "Dragon Claw"
 				end
 				if game.Players.LocalPlayer.Backpack:FindFirstChild("Black Leg") and game.Players.LocalPlayer.Backpack:FindFirstChild("Black Leg").Level.Value >= 300  then
-					local args = {
-						[1] = "BuyFishmanKarate"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectro")
 				end
 				if game.Players.LocalPlayer.Character:FindFirstChild("Black Leg") and game.Players.LocalPlayer.Character:FindFirstChild("Black Leg").Level.Value >= 300  then
-					local args = {
-						[1] = "BuyFishmanKarate"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectro")
 				end
-				if game.Players.LocalPlayer.Backpack:FindFirstChild("Electro") and game.Players.LocalPlayer.Backpack:FindFirstChild("Electro").Level.Value >= 100  then
-					local args = {
-						[1] = "BuyBlackLeg"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+				if game.Players.LocalPlayer.Backpack:FindFirstChild("Electro") and game.Players.LocalPlayer.Backpack:FindFirstChild("Electro").Level.Value >= 300  then
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyFishmanKarate")
 				end
 				if game.Players.LocalPlayer.Character:FindFirstChild("Electro") and game.Players.LocalPlayer.Character:FindFirstChild("Electro").Level.Value >= 300  then
-					local args = {
-						[1] = "BuyBlackLeg"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyFishmanKarate")
 				end
 				if game.Players.LocalPlayer.Backpack:FindFirstChild("Fishman Karate") and game.Players.LocalPlayer.Backpack:FindFirstChild("Fishman Karate").Level.Value >= 300  then
 					if SuperhumanFull and game.Players.LocalPlayer.Data.Fragments.Value < 1500 then
@@ -595,12 +589,7 @@ spawn(function()
 					else
 						AutoRaids = false
 						RaidsArua = false
-						local args = {
-							[1] = "BlackbeardReward",
-							[2] = "DragonClaw",
-							[3] = "2"
-						}
-						game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+				game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward","DragonClaw","2")
 					end
 				end
 				if game.Players.LocalPlayer.Character:FindFirstChild("Fishman Karate") and game.Players.LocalPlayer.Character:FindFirstChild("Fishman Karate").Level.Value >= 300  then
@@ -613,25 +602,14 @@ spawn(function()
 					else
 						AutoRaids = false
 						RaidsArua = false
-						local args = {
-							[1] = "BlackbeardReward",
-							[2] = "DragonClaw",
-							[3] = "2"
-						}
-						game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+						game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward","DragonClaw","2")
 					end
 				end
 				if game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Claw") and game.Players.LocalPlayer.Backpack:FindFirstChild("Dragon Claw").Level.Value >= 300  then
-					local args = {
-						[1] = "BuySuperhuman"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySuperhuman")
 				end
 				if game.Players.LocalPlayer.Character:FindFirstChild("Dragon Claw") and game.Players.LocalPlayer.Character:FindFirstChild("Dragon Claw").Level.Value >= 300  then
-					local args = {
-						[1] = "BuySuperhuman"
-					}
-					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+					game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySuperhuman")
 				end 
 			end
 					end)
@@ -649,9 +627,7 @@ end
 
 -- ❌
 -- ✅
-local AutoFarm = Tab:CreateSector("AutoFarm","Left")
-local Kill_Elite_Hunter_ST = AutoFarm:AddLabel("Kill Elite Hunter : 0")
-local Kill_Cake_Monster_ST = AutoFarm:AddLabel("Kill Cake Monster : 0/500")
+local AutoFarm = Tab:CreateSector("Status","Left")
 local Bartlio_ST = AutoFarm:AddLabel("❌ : Quest Bartlio")
 local Open_Don_Swan_ST = AutoFarm:AddLabel("❌ : Quest Open Don Swan")
 local Phoenix_Awaken_ST = AutoFarm:AddLabel("❌ : Quest Phoenix Awaken")
@@ -662,10 +638,6 @@ local ST_Shisui = AutoFarm:AddLabel("❌ : Shisui")
 local ST_Saddi = AutoFarm:AddLabel("❌ : Saddi")
 local ST_Wando = AutoFarm:AddLabel("❌ : Wando")
 function CheckStatus()
-	Kill_Elite_Hunter_ST:Set("Kill Elite Hunter : "..tostring(game.ReplicatedStorage.Remotes.CommF_:InvokeServer("EliteHunter", "Progress")))
-	local OP = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("CakePrinceSpawner")
-    local Lp = tonumber(string.match(tostring(OP), "%d+"))
-	Kill_Cake_Monster_ST:Set("Kill Cake Monster : "..tostring(Lp).."/500")
 	if game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TalkTrevor","1") == 0 then
 		Open_Don_Swan_ST:Set("✅ : Open Don Swan Quest")
 	end
@@ -724,7 +696,6 @@ function CheckStatus()
 	end
 end
 CheckStatus()
-local AutoFarm = Tab:CreateSector("AutoFarm","Left")
 AutoFarm:AddLabel("Check Status")
 AutoFarm:AddButton("Open Fruit Inventory",function()
 	game:GetService("Players").LocalPlayer.PlayerGui.Main.FruitInventory.Visible = true
@@ -755,12 +726,8 @@ spawn(function()
     while wait(.1) do
         pcall(function()
             if _G.Auto_Buy_Legendary_Sword or Triple_A then
-                local args = {
-                    [1] = "LegendarySwordDealer",
-                    [2] = "2"
-                }
                 -- Triple_A
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("LegendarySwordDealer","2")
             else
 				wait(2)
 			end
